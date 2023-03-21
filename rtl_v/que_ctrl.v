@@ -61,6 +61,8 @@ endgenerate
 /* data from table to que*/
 wire                            dt2que_vld;
 wire  [(2*WID_D+CNT_W-1):0]     dt2que_ext;
+wire                            fifo_emp;
+wire                            fifo_full;
 
 assign dt2que_vld = dt_vld_in && dt_vld_flag[order_cnt]; // when pair success, data can go to que
 assign dt2que_ext = dt2que_vld ? 'd0 : {data_table[order_cnt], data_in, order_cnt}; // {a_left, a_right, cnt}
@@ -79,13 +81,14 @@ for (i = 0; i < FIFO_DEP ;i++ ) begin:QUE_FIFO
 end
 endgenerate
 
+
+
+// ptr cal
+assign    fifo_full = (que_wr_ptr[ADDR_W] != que_rd_ptr[ADDR_W]) && (que_wr_ptr[ADDR_W-1:0] == que_rd_ptr[ADDR_W-1:0]);
+assign    fifo_emp  = (que_wr_ptr[ADDR_W] == que_rd_ptr[ADDR_W]) && (que_wr_ptr[ADDR_W-1:0] == que_rd_ptr[ADDR_W-1:0]);
 // data from que 2 mux
 assign dt_vld_o = !fifo_emp;
 assign {a_left,a_right,order_cnt_o} = que_fifo[que_rd_ptr[ADDR_W-1:0]];
-
-// ptr cal
-wire    fifo_full = (que_wr_ptr[ADDR_W] != que_rd_ptr[ADDR_W]) && (que_wr_ptr[ADDR_W-1:0] == que_rd_ptr[ADDR_W-1:0]);
-wire    fifo_emp  = (que_wr_ptr[ADDR_W] == que_rd_ptr[ADDR_W]) && (que_wr_ptr[ADDR_W-1:0] == que_rd_ptr[ADDR_W-1:0]);
 
 always @(posedge clk or negedge rst_n) begin // wr process
     if(!rst_n) begin

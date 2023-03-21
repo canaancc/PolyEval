@@ -2,7 +2,8 @@ module polyeval_top #(
     parameter WID_D = 32,
     parameter WID_F = 32,
     parameter ORD_NUM = 30,
-) (
+    parameter MOD_NUM = 32
+)(
     input                    clk,
     input                    rst_n,
 
@@ -11,7 +12,7 @@ module polyeval_top #(
     input   [WID_F-1:0]     factor,
 
     output  [WID_D-1:0]     data_cal_out,
-    output                  data_vld_o,
+    output                  data_vld_o
 );
 parameter CNT_W = $clog2(ORD_NUM);
 

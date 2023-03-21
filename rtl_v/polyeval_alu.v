@@ -1,5 +1,5 @@
 module polyeval_alu
-#(parameter WID_D = 32， 
+#(parameter WID_D = 32, 
   parameter WID_F = 32, 
   parameter CNT_W = 5, 
   parameter MOD_NUM = 30)
